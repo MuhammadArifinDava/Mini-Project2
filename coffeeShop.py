@@ -20,13 +20,81 @@ class CoffeeShop:
       self.head = None
       self.total_income = 0
 
+   def add_new_coffee(self, coffee_name, price, stock, location):
+      if location == 'beginning':
+         new_coffee = {coffee_name: {"price": price, "stock": stock}}
+         self.items = {**new_coffee, **self.items}
+      elif location == 'end':
+         self.items[coffee_name] = {"price": price, "stock": stock}
+      elif location == 'middle':
+         num_items = len(self.items)
+         middle_index = num_items // 2
+         count = 0
+         temp_items = {}
+         for key, value in self.items.items():
+               temp_items[key] = value
+               count += 1
+               if count == middle_index:
+                  temp_items[coffee_name] = {"price": price, "stock": stock}
+         self.items = temp_items
+      else:
+         print("Invalid location. Coffee not added.")
+
+
+   def del_coffee(self, location='middle'):
+      if location == 'beginning':
+         if self.head:
+               deleted_coffee = self.head.customer_name
+               self.head = self.head.next
+               print(f"Coffee '{deleted_coffee}' deleted successfully from the beginning.")
+         else:
+               print("No coffee found to delete.")
+      elif location == 'end':
+         if self.head:
+               current = self.head
+               while current.next and current.next.next:
+                  current = current.next
+               if current.next:
+                  deleted_coffee = current.next.customer_name
+                  current.next = None
+                  print(f"Coffee '{deleted_coffee}' deleted successfully from the end.")
+               else:
+                  deleted_coffee = current.customer_name
+                  self.head = None
+                  print(f"Coffee '{deleted_coffee}' deleted successfully from the end.")
+         else:
+               print("No coffee found to delete.")
+      elif location == 'middle':
+         coffee_to_delete = input("Enter the coffee name to delete: ")
+         if coffee_to_delete in self.items:
+               del self.items[coffee_to_delete]
+               print(f"Coffee '{coffee_to_delete}' deleted successfully from the menu.")
+               return
+         if self.head:
+               current = self.head
+               prev = None
+               while current:
+                  if coffee_to_delete in current.order:
+                     if prev:
+                           prev.next = current.next
+                     else:
+                           self.head = current.next
+                     print(f"Coffee '{coffee_to_delete}' deleted successfully from the orders.")
+                     return
+                  prev = current
+                  current = current.next
+               print(f"Coffee '{coffee_to_delete}' not found in orders.")
+         else:
+               print("No coffee found to delete.")
+      else:
+         print("Invalid location. Coffee not deleted.")
+
    def display_menu_and_stock(self):
       table = PrettyTable(["Menu", "Price", "Stock"])
       for item, info in self.items.items():
          table.add_row([item, info["price"], info["stock"]])
       print("Coffee Shop Menu and Stock")
       print(table)
-
 
    def update_menu_and_stock(self):
       self.display_menu_and_stock()
@@ -116,13 +184,14 @@ class CoffeeShop:
    def display_main_menu(self):
       main_menu = PrettyTable()
       main_menu.field_names = ["Features", "CoffeeShop Hanei"]
-      main_menu.add_row(["1", "Display Menu & Stock"])
-      main_menu.add_row(["2", "Update Menu & Stock"])
-      main_menu.add_row(["3", "Delete Menu"])
-      main_menu.add_row(["4", "Input Orders"])
-      main_menu.add_row(["5", "View Orders"])
-      main_menu.add_row(["6", "Total Income"])
-      main_menu.add_row(["7", "Exit"])
+      main_menu.add_row(["1", "Display Menu"])
+      main_menu.add_row(["2", "Add New Menu"])
+      main_menu.add_row(["3", "Update Menu"])
+      main_menu.add_row(["4", "Delete Coffee"])
+      main_menu.add_row(["5", "Input Orders"])
+      main_menu.add_row(["6", "View Orders"])
+      main_menu.add_row(["7", "Total Income"])
+      main_menu.add_row(["8", "Exit"])
       print(main_menu)
 
    def display_total_income(self):
@@ -154,24 +223,34 @@ class CoffeeShop:
          if choice == '1':
                self.display_menu_and_stock()
          elif choice == '2':
-               self.update_menu_and_stock()
+               coffee_name = input("Enter new coffee name: ")
+               price = int(input("Enter price: "))
+               stock = int(input("Enter stock: "))
+               location = input("Enter location (beginning, middle, or end): ")
+               self.add_new_coffee(coffee_name, price, stock, location)
          elif choice == '3':
-               self.delete_menu()
+               self.update_menu_and_stock()
          elif choice == '4':
+               self.display_menu_and_stock()
+               location = input("Enter location (beginning, middle, or end): ")
+               self.del_coffee(location="middle")
+         elif choice == '5':
                self.display_menu_and_stock()
                customer_name = input("Enter your name: ")
                coffee = input("Enter the coffee that been ordered: ")
                quantity = int(input("Enter the quantity: "))
                self.place_order(customer_name, coffee, quantity)
-         elif choice == '5':
-               self.display_orders()
          elif choice == '6':
-               self.display_total_income()
+               self.display_orders()
          elif choice == '7':
+               self.display_total_income()
+         elif choice == '8':
                print("Thank you for using the Coffee Shop system.")
                break
          else:
                print("Invalid choice. Please try again.")
+
+
 
 coffee_shop = CoffeeShop()
 coffee_shop.run()
