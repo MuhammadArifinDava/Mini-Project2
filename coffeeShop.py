@@ -108,15 +108,6 @@ class CoffeeShop:
       else:
          print(f"Menu item '{item}' not found.")
 
-   def delete_menu(self):
-      self.display_menu_and_stock()
-      item = input("Enter the item to delete: ")
-      if item in self.items:
-         del self.items[item]
-         print(f"Menu item '{item}' deleted successfully.")
-      else:
-         print(f"Menu item '{item}' not found.")
-
    def place_order(self, customer_name, coffee_name, quantity):
       if coffee_name in self.items and self.items[coffee_name]["stock"] >= quantity:
          total_bill = self.items[coffee_name]["price"] * quantity
