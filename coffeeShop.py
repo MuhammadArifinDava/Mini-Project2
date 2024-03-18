@@ -368,15 +368,15 @@ class CoffeeShop:
                   self.search_menu_by_price()
                elif choice == '8':
                   self.search_menu_by_stock()   
-               elif choice == '8':
+               elif choice == '9':
                   self.display_menu_and_stock()
                   customer_name = input("Enter your name: ")
                   coffee = input("Enter the coffee that been ordered: ")
                   quantity = int(input("Enter the quantity: "))
                   self.place_order(customer_name, coffee, quantity)
-               elif choice == '9':
-                  self.display_orders()
                elif choice == '10':
+                  self.display_orders()
+               elif choice == '11':
                   self.display_total_income()
                elif choice == '0':
                   print(Fore.BLUE + "Thank you for using the Coffee Shop system.")
